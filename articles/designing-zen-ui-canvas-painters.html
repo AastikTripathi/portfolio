@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Designing Zen UI: Canvas Painters and Plant Physics - Aastik Tripathi</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="wordmark" href="../index.html">Aastik Tripathi</a>
+      <nav>
+        <a href="../index.html#archive">Archive</a>
+        <a href="https://github.com/AastikTripathi" target="_blank">GitHub</a>
+        <a href="mailto:iammraaat@gmail.com">Contact</a>
+      </nav>
+    </header>
+
+    <a href="../index.html" class="back-link">← Back to home</a>
+
+    <article class="post">
+      <div class="post-header">
+        <h1>🎨 Designing Zen UI: Canvas Painters and Plant Physics in Flutter</h1>
+        <div class="byline">May 15, 2026 · 4 minute read · UI &amp; Canvas Graphics</div>
+      </div>
+
+      <div class="post-content">
+        <p>
+          In health and habit logging applications, the UI is often clinical, rigid, and filled with warning progress bars. When building Sanctuary, we wanted a screen that felt peaceful and alive. We decided to map the user's routine consistency directly to a virtual garden containing growing plants and floating fireflies.
+        </p>
+
+        <p>
+          This essay outlines how we used Flutter's <code>CustomPainter</code> class to render organic procedural growth models that react dynamically to user behavior.
+        </p>
+
+        <h2>The CustomPainter Architecture</h2>
+        <p>
+          Flutter's CustomPainter provides access to a low-level Canvas API. To draw organic curves instead of simple geometric bars, we construct quadratic bezier paths representing plant stems:
+        </p>
+
+        <pre><code>// Drawing a plant stem with Bezier curves
+final path = Path();
+path.moveTo(bottomX, bottomY);
+path.quadraticBezierTo(
+  controlPointX,
+  controlPointY,
+  tipX,
+  tipY,
+);
+canvas.drawPath(path, stemPaint);</code></pre>
+
+        <h2>Mapping Growth Dynamics to Consistency</h2>
+        <p>
+          We query the database for the user's habit completions over the past seven days. This completion percentage is mapped to a growth index (0.0 to 1.0) that determines:
+        </p>
+        <ul>
+          <li>The length and angle of the main stem.</li>
+          <li>The number of procedural branches that grow out.</li>
+          <li>The scale and color of the leaves.</li>
+        </ul>
+        <p>
+          This organic representation rewards users for their routine consistency with a blooming virtual companion, rather than using stressful streaks or notification alerts.
+        </p>
+
+        <h2>Ambient Firefly Physics</h2>
+        <p>
+          To make the garden feel alive even when the user is idle, we implemented an ambient firefly simulator. Each firefly is modeled as an independent particle with position, velocity, and a sine-wave based glowing opacity. 
+        </p>
+        <p>
+          We use a standard animation controller to trigger tick updates, updating the positions in memory and requesting a canvas repaint at 60 FPS, ensuring that Sanctuary remains a calm, immersive digital sanctuary.
+        </p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

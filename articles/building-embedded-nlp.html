@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embedding Small NLP Categorizers - Aastik Tripathi</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="wordmark" href="../index.html">Aastik Tripathi</a>
+      <nav>
+        <a href="../index.html#archive">Archive</a>
+        <a href="https://github.com/AastikTripathi" target="_blank">GitHub</a>
+        <a href="mailto:iammraaat@gmail.com">Contact</a>
+      </nav>
+    </header>
+
+    <a href="../index.html" class="back-link">← Back to home</a>
+
+    <article class="post">
+      <div class="post-header">
+        <h1>🧠 Embedding Small Language Categorizers in Mobile Application Sandboxes</h1>
+        <div class="byline">April 12, 2026 · 3 minute read · Embedded NLP &amp; Search</div>
+      </div>
+
+      <div class="post-content">
+        <p>
+          Health journaling apps often benefit from categorizing thoughts automatically. However, standard NLP models require heavy server architectures or large on-device neural network runtimes. For Sanctuary, we implemented a lightweight, fast tf-idf/cosine similarity matching system in raw Dart.
+        </p>
+
+        <h2>Tokenization &amp; Stopwords Filtering</h2>
+        <p>
+          The input text is tokenized into clean lowercase words, filtering out common English stopwords (like "the", "is", "at") to isolate the core semantic tokens.
+        </p>
+
+        <h2>Semantic Tag Recommendation</h2>
+        <p>
+          We build term frequency vectors for current journal entries and historical entries. The recommendation engine computes cosine similarities on-the-fly, suggesting relevant past tags based on entry themes. This offers cohesive, context-aware metadata recommendations directly inside the Flutter sandbox in under 1 millisecond.
+        </p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

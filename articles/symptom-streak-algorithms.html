@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Symptom-Free Streak Algorithms - Aastik Tripathi</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="wordmark" href="../index.html">Aastik Tripathi</a>
+      <nav>
+        <a href="../index.html#archive">Archive</a>
+        <a href="https://github.com/AastikTripathi" target="_blank">GitHub</a>
+        <a href="mailto:iammraaat@gmail.com">Contact</a>
+      </nav>
+    </header>
+
+    <a href="../index.html" class="back-link">← Back to home</a>
+
+    <article class="post">
+      <div class="post-header">
+        <h1>📊 Mathematical Streak Algorithms: Days Elapsed, Intervals, and Gaps</h1>
+        <div class="byline">May 20, 2026 · 3 minute read · Analytics &amp; Algorithms</div>
+      </div>
+
+      <div class="post-content">
+        <p>
+          Unlike habit streaks which count consecutive days of action, symptom tracking requires counting consecutive days of <em>non-action</em> (symptom-free days). Computing these intervals accurately requires scanning chronological time series lists and isolating incident gaps.
+        </p>
+
+        <h2>Chronological Interval Calculation</h2>
+        <p>
+          First, we filter and map all physical logs containing active symptoms (e.g. seizures or custom event spikes) to a sorted list of unique DateTime stamps. 
+        </p>
+        <p>
+          To find the <strong>average time between events</strong>, we iterate over the sorted timestamps and calculate the gap in days between consecutive flare days:
+        </p>
+        <pre><code>double sumGaps = 0;
+for (int i = 1; i &lt; flareDates.length; i++) {
+  sumGaps += flareDates[i].difference(flareDates[i - 1]).inDays;
+}
+final avgGap = sumGaps / (flareDates.length - 1);</code></pre>
+
+        <h2>Longest Streak Logic</h2>
+        <p>
+          The longest streak represents the maximum symptom-free interval. We compute this by checking the gaps between all consecutive events, and comparing them with the gap between the latest event and today:
+        </p>
+        <pre><code>int longestStreak = 0;
+for (int i = 1; i &lt; flareDates.length; i++) {
+  final gap = flareDates[i].difference(flareDates[i - 1]).inDays - 1;
+  if (gap &gt; longestStreak) longestStreak = gap;
+}
+final currentGap = today.difference(flareDates.last).inDays - 1;
+if (currentGap &gt; longestStreak) longestStreak = currentGap;</code></pre>
+        <p>
+          This isolates the metrics efficiently and supports user motivation by highlighting their longest symptom-free progress.
+        </p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

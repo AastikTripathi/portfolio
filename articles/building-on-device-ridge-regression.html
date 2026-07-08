@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sanctuary: The Math Behind On-Device Regularization - Aastik Tripathi</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="wordmark" href="../index.html">Aastik Tripathi</a>
+      <nav>
+        <a href="../index.html#archive">Archive</a>
+        <a href="https://github.com/AastikTripathi" target="_blank">GitHub</a>
+        <a href="mailto:iammraaat@gmail.com">Contact</a>
+      </nav>
+    </header>
+
+    <a href="../index.html" class="back-link">← Back to home</a>
+
+    <article class="post">
+      <div class="post-header">
+        <h1>🌱 Sanctuary: The Math Behind On-Device Regularization</h1>
+        <div class="byline">July 8, 2026 · 6 minute read · Mobile &amp; Local ML</div>
+      </div>
+
+      <div class="post-content">
+        <p>
+          In a world dominated by cloud APIs and remote LLM inferences, building advanced user analytics running completely offline inside a mobile sandbox is both a challenge and a statement. For <strong>Sanctuary</strong>, a privacy-first symptom and routine journal, sending user inputs to cloud databases was out of the question. 
+        </p>
+        
+        <p>
+          To find correlation triggers between sleep, cycle phases, active custom symptoms (like pain level or seizure spikes), and mood metrics, we needed a robust modeling algorithm. This essay breaks down how we built a synchronous <strong>L2 Regularized Ridge Regression</strong> engine directly inside a Flutter application.
+        </p>
+
+        <h2>Why Ridge Regression?</h2>
+        <p>
+          Ordinary Least Squares (OLS) regression breaks down when variables are highly collinear (e.g., tracking both caffeine intake and sleep quality on the same day). On small datasets (such as a single user's 30-day log history), OLS easily overfits, resulting in wild, physically meaningless coefficient swings.
+        </p>
+        
+        <p>
+          L2 Regularization (Ridge Regression) solves this by adding a penalty parameter (lambda/alpha) to the cost function:
+        </p>
+        <pre><code>Cost = ||y - Xw||² + λ||w||²</code></pre>
+        <p>
+          This forces the coefficients (weights) to shrink toward zero, suppressing collinearity noise and ensuring that predictions stay stable even with limited daily logs.
+        </p>
+
+        <h2>Implementing Matrix Math from Scratch in Dart</h2>
+        <p>
+          Flutter does not bundle native linear algebra solvers. To solve the normal equation for Ridge Regression:
+        </p>
+        <pre><code>w = (XᵀX + λI)⁻¹ Xᵀy</code></pre>
+        <p>
+          We had to implement a custom matrix math library in Dart, handling transpose, multiplication, and matrix inversion using Gaussian elimination.
+        </p>
+
+        <pre><code>// Matrix Inversion via Gaussian Elimination
+List&lt;List&lt;double&gt;&gt;? invert(List&lt;List&lt;double&gt;&gt; A) {
+  int n = A.length;
+  // Initialize identity matrix I
+  List&lt;List&lt;double&gt;&gt; I = List.generate(n, (i) =&gt; 
+    List.generate(n, (j) =&gt; i == j ? 1.0 : 0.0)
+  );
+
+  // Perform forward elimination & back substitution
+  for (int i = 0; i &lt; n; i++) {
+    double pivot = A[i][i];
+    if (pivot.abs() &lt; 1e-9) return null; // Singular matrix
+
+    for (int j = 0; j &lt; n; j++) {
+      A[i][j] /= pivot;
+      I[i][j] /= pivot;
+    }
+
+    for (int k = 0; k &lt; n; k++) {
+      if (k == i) continue;
+      double factor = A[k][i];
+      for (int j = 0; j &lt; n; j++) {
+        A[k][j] -= factor * A[i][j];
+        I[k][j] -= factor * I[i][j];
+      }
+    }
+  }
+  return I;
+}</code></pre>
+
+        <h2>Isolating Anomalies (The Stress Shield)</h2>
+        <p>
+          One of the major problems with health journaling is that mood is heavily affected by things outside of daily routines—such as a sudden family emergency or a bad day at work.
+        </p>
+        <p>
+          To prevent these massive outliers from polluting regular habit correlations, we introduced a toggle card: <strong>Unusual / Highly Stressful Note</strong>. When toggled by the user, the engine maps this as a separate binary indicator (an <code>externalShockShield</code> column in the matrix). This isolates the stress variance, keeping the other routine coefficients mathematically clean.
+        </p>
+
+        <h2>Results</h2>
+        <p>
+          By embedding this engine directly in Sanctuary, users can see how each routine (like gardening, exercise, or study) affects their baseline headspace. Calculations finish in under 2 milliseconds inside the sandbox—ensuring user privacy remains absolute while delivering personalized analytics.
+        </p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

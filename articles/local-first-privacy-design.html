@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Local-First JSON Architectures - Aastik Tripathi</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="wordmark" href="../index.html">Aastik Tripathi</a>
+      <nav>
+        <a href="../index.html#archive">Archive</a>
+        <a href="https://github.com/AastikTripathi" target="_blank">GitHub</a>
+        <a href="mailto:iammraaat@gmail.com">Contact</a>
+      </nav>
+    </header>
+
+    <a href="../index.html" class="back-link">← Back to home</a>
+
+    <article class="post">
+      <div class="post-header">
+        <h1>🔒 Local-First JSON Database Architectures and Offline Backups</h1>
+        <div class="byline">June 14, 2026 · 3 minute read · Local Storage &amp; Database</div>
+      </div>
+
+      <div class="post-content">
+        <p>
+          Managing application state offline requires a robust database system that handles quick reads, updates, and structures serialization correctly. For Sanctuary, we designed a local JSON storage model that writes directly to the device's sandbox document directory.
+        </p>
+
+        <h2>File-Based Serialization</h2>
+        <p>
+          Instead of introducing heavy SQLite configuration binaries, all models (Thoughts, Habit Logs, Physical Logs, and Habit Definitions) implement standard JSON serialization in Dart. On write transactions, the entire state is encoded and flushed to a single local file asynchronously:
+        </p>
+        <pre><code>Future&lt;void&gt; _saveAllData() async {
+  final file = await _getSaveFile();
+  final data = {
+    'thoughts': _thoughts.map((t) =&gt; t.toJson()).toList(),
+    'physical_logs': _physicalLogs.map((p) =&gt; p.toJson()).toList(),
+    'habit_definitions': _habitDefinitions.map((h) =&gt; h.toJson()).toList(),
+    'habit_logs': _habitLogs.map((hl) =&gt; hl.toJson()).toList(),
+  };
+  await file.writeAsString(jsonEncode(data));
+}</code></pre>
+
+        <h2>Export &amp; Import Safeguards</h2>
+        <p>
+          Since files are saved in the app's local sandbox, deleting the app wipes out the data. To prevent data loss, we built local backup and restore utilities. The export feature extracts the raw JSON string and opens the native file sharing menu, allowing users to save the backup to their filesystem. The import feature reads the file back, parses/validates the JSON keys, and re-initializes the app database.
+        </p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
